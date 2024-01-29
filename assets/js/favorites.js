@@ -1,3 +1,5 @@
+
+
 document.addEventListener('DOMContentLoaded', function () {
     const favoriteMealsContainer = document.getElementById('favoriteMeals');
 
@@ -19,8 +21,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function fetchFavoriteMealDetails(mealId) {
-
-      
         const apiUrl = `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${mealId}`;
 
         fetch(apiUrl)
@@ -49,11 +49,30 @@ document.addEventListener('DOMContentLoaded', function () {
         const mealName = document.createElement('p');
         mealName.textContent = favoriteMeal.strMeal;
 
+        const removeButton = document.createElement('button');
+        removeButton.textContent = 'Remove';
+        removeButton.addEventListener('click', () => removeFavoriteMeal(favoriteMeal.idMeal));
+
         card.appendChild(mealImage);
         card.appendChild(mealName);
+        card.appendChild(removeButton);
 
         return card;
     }
-});
 
+    function removeFavoriteMeal(mealId) {
+        // Fetch favorites from local storage
+        let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+
+        // Remove the selected meal from favorites
+        favorites = favorites.filter(favorite => favorite.idMeal !== mealId);
+
+        // Update local storage
+        localStorage.setItem('favorites', JSON.stringify(favorites));
+
+        // Refresh the displayed favorite meals
+        favoriteMealsContainer.innerHTML = '';
+        displayFavoriteMeals();
+    }
+});
 
